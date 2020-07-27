@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!
+  include Devise::Controllers::Helpers  
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+  #before_filter :authorize_admin, except [:index, :show]
   def index
     @users = User.all
   end
@@ -26,7 +28,7 @@ class UsersController < ApplicationController
       else
         format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+     end
     end
   end
 

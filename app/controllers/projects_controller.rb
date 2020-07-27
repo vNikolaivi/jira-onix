@@ -1,22 +1,24 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
-  #before_action :authenticate_user!
-
+  before_action :authenticate_user!
+  
   # GET /projects
   # GET /projects.json
   def index
     @projects = Project.all
+    authorize @projects
   end
 
   # GET /projects/1
   # GET /projects/1.json
   def show
-    @project = Project.find(params[:id])
+    
   end
 
   # GET /projects/new
   def new
     @project = Project.new
+    authorize @project
   end
 
   # GET /projects/1/edit
@@ -27,6 +29,8 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.new(project_params)
+    @project.user = current_user
+    authorize @project
     respond_to do |format|
       if @project.save
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
@@ -67,10 +71,11 @@ class ProjectsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.find(params[:id])
+    authorize @project
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def project_params
-    params.require(:project).permit(:project_id, :title, :description, :notes, :performer, :status)
+    params.require(:project).permit(:project_id, :title, :description, :notes, :performer, :status, :user_id)
   end
 end
